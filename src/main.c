@@ -71,7 +71,9 @@ int main(void) {
     board = BoardCreate();
     DisplayWriteBCD(board->display, number, sizeof(number));
 
-    SisTick_Init(50);
+    SisTick_Init(1000);
+
+    DisplayBlinkDigits(board->display, 0, 1, 250);
 
     while (true) {
 
@@ -84,6 +86,7 @@ int main(void) {
 }
 
 void SysTick_Handler(void) {
+    /* Refresco de la pantalla*/
     DisplayRefresh(board->display);
 }
 

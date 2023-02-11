@@ -66,6 +66,10 @@
 struct display_s {
     uint8_t digits;
     uint8_t active_digit;
+    uint8_t blinking_from;
+    uint8_t blinking_to;
+    uint16_t blinking_frequency;
+    uint16_t blinking_count;
     uint8_t memory[DISPLAY_MAX_DIGITS];
     struct display_driver_s driver;
 };
@@ -100,6 +104,10 @@ display_t DisplayCreate(uint8_t digits, display_driver_t driver){
 
     display->digits = digits;
     display->active_digit = digits - 1;
+    display->blinking_from = 0;
+    display->blinking_to = 0;
+    display->blinking_frequency = 0;
+    display->blinking_count = 0;
     memset(display->memory, 0, sizeof(display->memory));
     display->driver.ScreenTurnOff = driver->ScreenTurnOff;
     display->driver.ScreenTurnOn = driver->ScreenTurnOn;
@@ -119,6 +127,7 @@ void DisplayWriteBCD( display_t display, uint8_t * number, uint8_t size){
 }
 
 void DisplayRefresh(display_t display){
+    uint8_t segments;
     display->driver.ScreenTurnOff();
     
     if (display->active_digit == display->digits - 1) {
@@ -127,9 +136,33 @@ void DisplayRefresh(display_t display){
         display->active_digit = display->active_digit + 1;
     }
 
-    display->driver.ScreenTurnOn(display->memory[display->active_digit]);
+    if( display->active_digit == 0) {
+        display->blinking_count++;
+        if(display->blinking_count >= display->blinking_frequency){
+            display->blinking_count = 0;
+        }
+    }
+
+    segments = display->memory[display->active_digit];
+    if(display->blinking_frequency > 0){
+        if( display->blinking_count >= display->blinking_frequency / 2){
+            if((display->active_digit >= display->blinking_from) && (display->active_digit <= display->blinking_to)){
+                segments = 0;
+            }
+        }
+    }
+
+    display->driver.ScreenTurnOn(segments);
+    
     display->driver.DigitTurnOn(display->active_digit);
 
+}
+
+void DisplayBlinkDigits(display_t display, uint8_t from, uint8_t to, uint16_t frequency) {
+  display->blinking_from = from;
+  display->blinking_to = to;
+  display->blinking_frequency = frequency;
+  display->blinking_count = 0;
 }
 
 /* === Ciere de documentacion ============================================== */
