@@ -127,6 +127,15 @@ void DisplayRefresh(display_t display);
  */
 void DisplayBlinkDigits(display_t display, uint8_t from, uint8_t to, uint16_t frequency);
 
+/**
+ * @brief Función para hacer parpadear los puntos de la pantalla
+ * 
+ * @param display   Puntero al descriptor de la pantalla que se quiere utilizar
+ * @param from      Posición del primer dígito que se quiere hacer parpadear el punto
+ * @param to        Posición del último dígito que se quiere hacer parpadear el punto 
+ */
+void DisplayToggleDots(display_t display, uint8_t from, uint8_t to);
+
 /* === Declaraciones de funciones publicas ================================= */
 
 /* === Ciere de documentacion ============================================== */

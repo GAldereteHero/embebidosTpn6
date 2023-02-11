@@ -165,6 +165,14 @@ void DisplayBlinkDigits(display_t display, uint8_t from, uint8_t to, uint16_t fr
   display->blinking_count = 0;
 }
 
+void DisplayToggleDots(display_t display, uint8_t from, uint8_t to) {
+    for (int index = from; index <= to; index++){
+        display->memory[index] ^= SEGMENT_P;
+    }
+    
+}
+
+
 /* === Ciere de documentacion ============================================== */
 
 /** @} Final de la definición del modulo para doxygen */

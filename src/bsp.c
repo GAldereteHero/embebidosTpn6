@@ -146,10 +146,10 @@ void TecsInit(void){
     board.setAlarm = DigitalInputCreate(TEC_F2_GPIO, TEC_F2_BIT, false);
 
     Chip_SCU_PinMuxSet(TEC_F3_PORT, TEC_F3_PIN, SCU_MODE_INBUFF_EN | SCU_MODE_PULLUP | TEC_F3_FUNC);
-    board.decrement = DigitalInputCreate(TEC_F3_GPIO, TEC_F3_BIT, false);
+    board.increment = DigitalInputCreate(TEC_F3_GPIO, TEC_F3_BIT, false);
 
     Chip_SCU_PinMuxSet(TEC_F4_PORT, TEC_F4_PIN, SCU_MODE_INBUFF_EN | SCU_MODE_PULLUP | TEC_F4_FUNC);
-    board.increment = DigitalInputCreate(TEC_F4_GPIO, TEC_F4_BIT, false);
+    board.decrement = DigitalInputCreate(TEC_F4_GPIO, TEC_F4_BIT, false);
 
     Chip_SCU_PinMuxSet(TEC_ACCEPT_PORT, TEC_ACCEPT_PIN, SCU_MODE_INBUFF_EN | SCU_MODE_PULLUP | TEC_ACCEPT_FUNC);
     board.accept = DigitalInputCreate(TEC_ACCEPT_GPIO, TEC_ACCEPT_BIT, false);
@@ -192,10 +192,12 @@ void displayInit(void){
 void clearScreen(void){
     Chip_GPIO_ClearValue(LPC_GPIO_PORT, DIGITS_GPIO, DIGITS_MASK);
     Chip_GPIO_ClearValue(LPC_GPIO_PORT, SEGMENTS_GPIO, SEGMENTS_MASK);
+    Chip_GPIO_SetPinState(LPC_GPIO_PORT, SEGMENT_P_GPIO, SEGMENT_P_BIT, false);
 };
 
-void WriteNumber(uint8_t number){
-    Chip_GPIO_SetValue(LPC_GPIO_PORT, SEGMENTS_GPIO, number);
+void WriteNumber(uint8_t segments){
+    Chip_GPIO_SetValue(LPC_GPIO_PORT, SEGMENTS_GPIO, (segments)&SEGMENTS_MASK);
+    Chip_GPIO_SetPinState(LPC_GPIO_PORT, SEGMENT_P_GPIO, SEGMENT_P_BIT, (segments & SEGMENT_P));
 };
 
 void SelectDigit(uint8_t digit){
