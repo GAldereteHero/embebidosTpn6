@@ -57,8 +57,9 @@
 
 /* === Public variable definitions ============================================================= */
 
-/* === Private variable definitions ============================================================ */
+static board_t board;
 
+/* === Private variable definitions ============================================================ */
 
 /* === Private function implementation ========================================================= */
 
@@ -67,19 +68,23 @@
 int main(void) {
 
     uint8_t number[4] = {1,2,3,4};
-    board_t board = BoardCreate();
+    board = BoardCreate();
     DisplayWriteBCD(board->display, number, sizeof(number));
+
+    SisTick_Init(50);
 
     while (true) {
 
-        DisplayRefresh(board->display);
-        
         for (int index = 0; index < 100; index++) {
-            for (int delay = 0; delay < 250; delay++) {
+            for (int delay = 0; delay < 25000; delay++) {
                 __asm("NOP");
             }
         }
     }
+}
+
+void SysTick_Handler(void) {
+    DisplayRefresh(board->display);
 }
 
 /* === End of documentation ==================================================================== */

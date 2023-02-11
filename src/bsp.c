@@ -214,6 +214,20 @@ board_t BoardCreate(void){
     return &board;
 }
 
+void SisTick_Init(uint16_t ticks) {
+    /* Desactivamos las interrupciones*/
+    __asm volatile("cpsid i");
+
+    /* Activamos el Systick*/
+    SystemCoreClockUpdate();
+    SysTick_Config(SystemCoreClock/ticks);
+
+    /* Actualizamos la prioridad de la Int. */
+    NVIC_SetPriority(SysTick_IRQn, (1 <<__NVIC_PRIO_BITS) - 1);
+
+    /* Activamos las interrupciones*/
+    __asm volatile("cpsie i");
+}
 
 /* === Ciere de documentacion ============================================== */
 
